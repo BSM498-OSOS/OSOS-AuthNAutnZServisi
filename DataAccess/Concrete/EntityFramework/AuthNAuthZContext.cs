@@ -1,5 +1,6 @@
 ﻿using Core.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace DataAccess.Concrete.EntityFramework
     public class AuthNAuthZContext:DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql();
+            => optionsBuilder.UseNpgsql("Host=host.docker.internal;Database=Bitirme;UserId=postgres;Password=Mert.123");//hosta bağlanmak için
 
         public DbSet<User> Users { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }

@@ -17,6 +17,18 @@ namespace WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:3000",
+                                                          "http://localhost:8080")
+                                                    .AllowAnyHeader()
+                                                    .AllowAnyMethod(); 
+                                  });
+            });
 
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureContainer<ContainerBuilder>(builder =>
@@ -46,6 +58,7 @@ namespace WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -56,7 +69,9 @@ namespace WebAPI
             }
             app.ConfigureCustomExceptionMiddleware();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
 

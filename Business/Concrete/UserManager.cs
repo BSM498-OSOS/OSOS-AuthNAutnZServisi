@@ -35,9 +35,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(_userDal.GetAll().Select(u=>new User {UserName=u.UserName,ID=u.ID,Email=u.Email,FirstName=u.FirstName,LastName=u.LastName}).ToList());
         }
 
-        public IDataResult<User> GetById(int id)
+        public IDataResult<User> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<User>(_userDal.Get(u => u.ID == id));
         }
 
         public IDataResult<User> GetByMail(string email)
