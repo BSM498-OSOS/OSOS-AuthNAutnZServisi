@@ -15,7 +15,22 @@ namespace WebAPI.Controllers
 
         [HttpGet("getUserByID")]
         public IActionResult getUserByID(Guid id) { 
-            return Ok(_userService.GetById(id));
+            var result=_userService.GetCompleteInfoById(id);
+            if(result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
+        }
+        [HttpGet("getAllUser")]
+        public IActionResult getAllUser()
+        {
+            var result = _userService.GetAllCompleteInfo();
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
         }
     }
 }

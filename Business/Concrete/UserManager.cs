@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,27 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(_userDal.GetAll().Select(u=>new User {UserName=u.UserName,ID=u.ID,Email=u.Email,FirstName=u.FirstName,LastName=u.LastName}).ToList());
         }
 
+        public IDataResult<List<UserWithCompleteInfoDto>> GetAllCompleteInfo()
+        {
+            var result = _userDal.GetAll()
+                .Select(u=>new UserWithCompleteInfoDto 
+                { 
+                    ID= u.ID,
+                    UserName=u.UserName,
+                    Email  =u.Email,
+                    FirstName=u.FirstName,
+                    LastName=u.LastName,
+                    Status=u.Status,
+                    Roles =_userDal.GetClaims(u)
+                }).ToList();
+            if (result.Count > 0)
+            {
+                return new SuccessDataResult<List<UserWithCompleteInfoDto>>(result);
+            }
+            return new ErrorDataResult<List<UserWithCompleteInfoDto>>();
+
+        }
+
         public IDataResult<User> GetById(Guid id)
         {
             return new SuccessDataResult<User>(_userDal.Get(u => u.ID == id));
@@ -58,6 +81,26 @@ namespace Business.Concrete
                 return new SuccessDataResult<List<OperationClaim>>(result);
             }
             return new ErrorDataResult<List<OperationClaim>>();
+        }
+
+        public IDataResult<UserWithCompleteInfoDto> GetCompleteInfoById(Guid id)
+        {
+            var user = _userDal.Get(u => u.ID == id);
+            if(user != null)
+            {
+                var result = new UserWithCompleteInfoDto
+                {
+                    ID = user.ID,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Status = user.Status,
+                    Roles = _userDal.GetClaims(user)
+                };
+                return new SuccessDataResult<UserWithCompleteInfoDto>(result);
+            }
+            return new ErrorDataResult<UserWithCompleteInfoDto>();
         }
 
         public IResult Update(User user)

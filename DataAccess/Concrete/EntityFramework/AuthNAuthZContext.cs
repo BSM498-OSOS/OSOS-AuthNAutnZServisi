@@ -13,7 +13,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseNpgsql("Host=host.docker.internal;Database=Bitirme;UserId=postgres;Password=Mert.123");//hosta bağlanmak için
-
+        //host.docker.internal
         public DbSet<User> Users { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
